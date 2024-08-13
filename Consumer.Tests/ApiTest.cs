@@ -5,6 +5,8 @@ using System.Net;
 using Consumer;
 using PactNet.Matchers;
 using PactNet.Infrastructure.Outputters;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace tests
 {
@@ -25,19 +27,18 @@ namespace tests
 
             var Config = new PactConfig
             {
-              PactDir = "./pacts/",
-              Outputters = new []
-              {
+              Outputters =
+              [
                 new ConsoleOutput()
+              ],
+              DefaultJsonSettings = new JsonSerializerSettings
+              {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
               }
-            };
-
-            //pact = Pact.V3("ApiClient", "ProductService", Config).UsingNativeBackend(port);
-            IPactV3 pact = Pact.V3("ApiClient", "ProductService", Config);
-            this.pact = pact.UsingNativeBackend();
-            ApiClient = new ApiClient(new Uri($"http://localhost:9000"));
-  
-        }
+            };            //pact = Pact.V3("ApiClient", "ProductService", Config).UsingNativeBackend(port);
+      this.pact = Pact.V3("ApiClient", "ProductService", Config).WithHttpInteractions(port);
+      ApiClient = new ApiClient(new Uri($"http://localhost:{port}"));
+    }
 
         [Fact]
         public async void GetAllProducts()
