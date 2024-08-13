@@ -40,6 +40,7 @@ namespace Consumer
                 }
                 catch (Exception ex)
                 {
+
                     throw new Exception("There was a problem connecting to Products API.", ex);
                 }
             }
