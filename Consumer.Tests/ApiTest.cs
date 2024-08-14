@@ -2,28 +2,27 @@
 using PactNet;
 using Xunit.Abstractions;
 using System.Net;
-using Consumer;
 using PactNet.Matchers;
 using PactNet.Infrastructure.Outputters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace tests
+namespace Consumer.Tests
 {
     public class ApiTest
     {
-        private IPactBuilderV3 pact;
+        private readonly IPactBuilderV3 pact;
         private readonly ApiClient ApiClient;
         private readonly int port = 9000;
         private readonly List<object> products;
 
         public ApiTest(ITestOutputHelper output)
         {
-            products = new List<object>()
-            {
+            products =
+            [
                 new { id = 9, type = "CREDIT_CARD", name = "GEM Visa", version = "v2" },
                 new { id = 10, type = "CREDIT_CARD", name = "28 Degrees", version = "v1" }
-            };
+            ];
 
             var Config = new PactConfig
             {
@@ -64,7 +63,7 @@ namespace tests
             // Arange
             pact.UponReceiving("A valid request for a product")
                     .Given("There is data")
-                    .WithRequest(HttpMethod.Get, "/api/product/10")
+                    .WithRequest(HttpMethod.Get, "/api/products/10")
                 .WillRespond()
                     .WithStatus(HttpStatusCode.OK)
                     .WithHeader("Content-Type", "application/json; charset=utf-8")

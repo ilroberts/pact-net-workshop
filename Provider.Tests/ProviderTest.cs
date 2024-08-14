@@ -3,7 +3,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Provider;
 
-namespace tests
+namespace Provider.Tests
 {
   public class ProductTest
   {
@@ -27,7 +27,7 @@ namespace tests
           .Build();
       _webHost.Start();
 
-      using var verifier = new PactVerifier(new PactVerifierConfig());
+      using var verifier = new PactVerifier(config);
       var pactFolder = new DirectoryInfo(Path.Join(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "Consumer.Tests", "pacts"));
       verifier.ServiceProvider("ProductService", new Uri(_pactServiceUri))
       .WithDirectorySource(pactFolder)
