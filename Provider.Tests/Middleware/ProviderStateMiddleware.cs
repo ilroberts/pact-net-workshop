@@ -47,11 +47,13 @@ namespace Provider.Tests.Middleware
 
         private void Product10Exists()
         {
+            Console.WriteLine("Product10Exists");
             List<Product> products = new List<Product>()
             {
                 new Product(10, "28 Degrees", "CREDIT_CARD", "v1")
             };
 
+            Console.WriteLine($"Product10Exists: {products.Count}");
             _repository.SetState(products);
         }
 
@@ -91,6 +93,7 @@ namespace Provider.Tests.Middleware
                 //A null or empty provider state key must be handled
                 if (providerState != null && !String.IsNullOrEmpty(providerState.State))
                 {
+                    Console.WriteLine($"ProviderState: {providerState.State}");
                     _providerStates[providerState.State].Invoke();
                 }
             }

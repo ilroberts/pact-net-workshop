@@ -1,7 +1,7 @@
 using PactNet.Verifier;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Provider;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Provider.Tests.Middleware;
 
 namespace Provider.Tests
 {
@@ -21,11 +21,10 @@ namespace Provider.Tests
                 ]
       };
       var args = Array.Empty<string>();
-      using var _webHost = WebHost.CreateDefaultBuilder(args)
-          .UseStartup<TestStartup>()
-          .UseUrls(_pactServiceUri)
-          .Build();
-      _webHost.Start();
+      using var app = Startup.WebApp(args);
+      app.UseMiddleware<ProviderStateMiddleware>();
+      app.Urls.Add(_pactServiceUri);
+      app.Start();
 
       using var verifier = new PactVerifier(config);
       var pactFolder = new DirectoryInfo(Path.Join(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "Consumer.Tests", "pacts"));

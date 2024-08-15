@@ -8,13 +8,9 @@ namespace Provider
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            using var app = Startup.WebApp(args);
+            app.Urls.Add("http://localhost:9001");
+            app.Run();
         }
-
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .UseUrls("http://localhost:9001")
-                .Build();
     }
 }
