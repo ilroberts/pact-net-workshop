@@ -22,7 +22,7 @@ namespace Provider.Tests
       };
       var args = Array.Empty<string>();
       using var _webHost = WebHost.CreateDefaultBuilder(args)
-          .UseStartup<Startup>()
+          .UseStartup<TestStartup>()
           .UseUrls(_pactServiceUri)
           .Build();
       _webHost.Start();
@@ -31,6 +31,7 @@ namespace Provider.Tests
       var pactFolder = new DirectoryInfo(Path.Join(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "Consumer.Tests", "pacts"));
       verifier.ServiceProvider("ProductService", new Uri(_pactServiceUri))
       .WithDirectorySource(pactFolder)
+      .WithProviderStateUrl(new Uri($"{_pactServiceUri}/provider-states"))
       .Verify();
     }
   }

@@ -44,7 +44,7 @@ namespace Consumer.Tests
     {
       // Arange
       pact.UponReceiving("A valid request for all products")
-              .Given("There is data")
+              .Given("products exist")
               .WithRequest(HttpMethod.Get, "/api/products")
           .WillRespond()
               .WithStatus(HttpStatusCode.OK)
@@ -59,10 +59,10 @@ namespace Consumer.Tests
     }
 
     [Fact]
-    public async void GetProduct()
+    public async void GetProductWithIdOfTen()
     {
-      pact.UponReceiving("A valid request for a product")
-              .Given("There is data")
+      pact.UponReceiving("A valid request for a product with id 10")
+              .Given("product with ID 10 exists")
               .WithRequest(HttpMethod.Get, "/api/products/10")
           .WillRespond()
               .WithStatus(HttpStatusCode.OK)
@@ -79,8 +79,8 @@ namespace Consumer.Tests
     [Fact]
     public async void NoProductExists()
     {
-      pact.UponReceiving("A valid request for all products")
-              .Given("no product exists")
+      pact.UponReceiving("A valid request for all products where no products exist")
+              .Given("no products exist")
               .WithRequest(HttpMethod.Get, "/api/products")
           .WillRespond()
               .WithStatus(HttpStatusCode.OK)
@@ -100,7 +100,7 @@ namespace Consumer.Tests
     [Fact]
     public async void ProductDoesNotExist()
     {
-      pact.UponReceiving("A valid request for a product")
+      pact.UponReceiving("A request for product 11 that does not exist")
               .Given("product with ID 11 does not exist")
               .WithRequest(HttpMethod.Get, "/api/products/11")
           .WillRespond()
