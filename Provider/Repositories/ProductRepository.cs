@@ -1,6 +1,6 @@
-using System;
-using System.Collections.Generic;
 using provider.Model;
+using Optional;
+using System.Reflection.Metadata.Ecma335;
 
 namespace provider.Repositories
 {
@@ -10,11 +10,11 @@ namespace provider.Repositories
 
         public ProductRepository()
         {
-            State = new List<Product>()
-            {
+            State =
+            [
                 new Product(9, "GEM Visa", "CREDIT_CARD", "v2"),
                 new Product(10, "28 Degrees", "CREDIT_CARD", "v1")
-            };
+            ];
         }
 
         public void SetState(List<Product> state)
@@ -27,9 +27,10 @@ namespace provider.Repositories
             return State;
         }
 
-        public Product Get(int id)
+        public Option<Product> Get(int id)
         {
-            return State.Find(p => p.id == id);
+            var result = State.Find(p => p.Id == id);
+            return (result == null) ? Option.None<Product>() : Option.Some(result);
         }
     }
 }

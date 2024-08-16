@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Http;
@@ -31,29 +28,27 @@ namespace Provider.Tests.Middleware
 
         private void ProductsExist()
         {
-            List<Product> products = new List<Product>()
-            {
+            List<Product> products =
+            [
                 new Product(9, "GEM Visa", "CREDIT_CARD", "v2"),
                 new Product(10, "28 Degrees", "CREDIT_CARD", "v1")
-            };
+            ];
 
             _repository.SetState(products);
         }
 
         private void NoProductsExist()
         {
-            _repository.SetState(new List<Product>());
+            _repository.SetState([]);
         }
 
         private void Product10Exists()
         {
-            Console.WriteLine("Product10Exists");
-            List<Product> products = new List<Product>()
-            {
+            List<Product> products =
+            [
                 new Product(10, "28 Degrees", "CREDIT_CARD", "v1")
-            };
+            ];
 
-            Console.WriteLine($"Product10Exists: {products.Count}");
             _repository.SetState(products);
         }
 
@@ -66,12 +61,12 @@ namespace Provider.Tests.Middleware
         {
             if (context.Request.Path.StartsWithSegments("/provider-states"))
             {
-                await this.HandleProviderStatesRequest(context);
-                await context.Response.WriteAsync(String.Empty);
+                await HandleProviderStatesRequest(context);
+                await context.Response.WriteAsync(string.Empty);
             }
             else
             {
-                await this._next(context);
+                await _next(context);
             }
         }
 
@@ -79,10 +74,10 @@ namespace Provider.Tests.Middleware
         {
             context.Response.StatusCode = (int)HttpStatusCode.OK;
 
-            if (context.Request.Method.Equals(Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpMethod.Post.ToString().ToUpper(), StringComparison.CurrentCultureIgnoreCase) &&
+            if (context.Request.Method.Equals(HttpMethod.Post.ToString().ToUpperInvariant(), StringComparison.OrdinalIgnoreCase) &&
                 context.Request.Body != null)
             {
-                string jsonRequestBody = String.Empty;
+                string jsonRequestBody = string.Empty;
                 using (var reader = new StreamReader(context.Request.Body, Encoding.UTF8))
                 {
                     jsonRequestBody = await reader.ReadToEndAsync();
@@ -90,10 +85,8 @@ namespace Provider.Tests.Middleware
 
                 var providerState = JsonConvert.DeserializeObject<ProviderState>(jsonRequestBody);
 
-                //A null or empty provider state key must be handled
-                if (providerState != null && !String.IsNullOrEmpty(providerState.State))
+                if (providerState != null && !string.IsNullOrEmpty(providerState.State))
                 {
-                    Console.WriteLine($"ProviderState: {providerState.State}");
                     _providerStates[providerState.State].Invoke();
                 }
             }

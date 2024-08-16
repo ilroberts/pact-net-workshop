@@ -9,7 +9,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace Consumer.Tests
 {
-  public class ApiTest
+    public class ApiTest
   {
     private readonly IPactBuilderV3 pact;
     private readonly ApiClient ApiClient;

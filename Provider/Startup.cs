@@ -2,12 +2,12 @@ using provider.Repositories;
 
 namespace Provider
 {
-    public class Startup
+    public class Startup(IConfiguration configuration)
     {
 
         public static WebApplication WebApp(params string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             builder.Services.AddSingleton<IProductRepository, ProductRepository>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -20,34 +20,23 @@ namespace Provider
                 app.UseSwaggerUI();
             }
 
-            app.MapGet("/api/products", (IProductRepository productRepository) =>
+            app.MapGet("/api/products", static (IProductRepository productRepository) =>
             {
                 return Results.Ok(productRepository.List());
             });
 
-            app.MapGet("/api/products/{id}", (int id, IProductRepository productRepository) =>
+            app.MapGet("/api/products/{id}", static (int id, IProductRepository productRepository) =>
             {
-                var product = productRepository.Get(id);
-                if (product == null)
-                {
-                    return Results.NotFound();
-                }
-                return Results.Ok(product);
+                var result = productRepository.Get(id)
+                    .Map(p => Results.Ok(p))
+                    .ValueOr(() => Results.NotFound());
+
+                return result;
             });
-
-
-
             return app;
         }
 
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
+        public IConfiguration Configuration { get; } = configuration;
         // This method gets called by the runtime. Use this method to add services to the container.
-        
     }
 }
