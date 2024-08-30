@@ -1,6 +1,8 @@
 
 # .Net Pact Demonstrator
 
+![example workflow](https://github.com/ilroberts/pact-net-workshop/actions/workflows/dotnet.yml/badge.svg?branch=main)
+
 This project is intended to be a gentle introduction to [Pact testing](https://pact.io/) for .Net projects. It is based on the [pact-workshop-dotnet-core-v3](https://github.com/DiUS/pact-workshop-dotnet-core-v3) with a few updates to bring it up to date. The readme file in that repository contains a detailed description of the consumer and provider and the associated pact tests.
 
 ## Running locally
